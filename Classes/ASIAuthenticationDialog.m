@@ -101,8 +101,13 @@ static const NSUInteger kDomainSection = 1;
 
 	[request release];
 	[tableView release];
-	[presentingController.view removeFromSuperview];
+	
+	if ( [presentingController isViewLoaded] )
+	{
+		[presentingController.view removeFromSuperview];		
+	}
 	[presentingController release];
+	
 	[super dealloc];
 }
 

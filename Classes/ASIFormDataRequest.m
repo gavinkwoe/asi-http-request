@@ -30,11 +30,11 @@
 #pragma mark utilities
 - (NSString*)encodeURL:(NSString *)string
 {
-	NSString *newString = NSMakeCollectable([(NSString *)CFURLCreateStringByAddingPercentEscapes(kCFAllocatorDefault, (CFStringRef)string, NULL, CFSTR(":/?#[]@!$ &'()*+,;=\"<>%{}|\\^~`"), CFStringConvertNSStringEncodingToEncoding([self stringEncoding])) autorelease]);
-	if (newString) {
-		return newString;
-	}
-	return @"";
+	NSString * temp = (NSString *)CFURLCreateStringByAddingPercentEscapes(kCFAllocatorDefault, (CFStringRef)string, NULL, CFSTR(":/?#[]@!$ &'()*+,;=\"<>%{}|\\^~`"), CFStringConvertNSStringEncodingToEncoding([self stringEncoding]));
+	NSString * str = [NSString stringWithString:temp];
+	[temp autorelease];
+
+	return str;
 }
 
 #pragma mark init / dealloc
@@ -197,9 +197,15 @@
 		[self setShouldStreamPostDataFromDisk:YES];
 	}
 	
-	if ([self postFormat] == ASIURLEncodedPostFormat) {
+	if ([self postFormat] == ASIRawPostFormat){
+		NSLog( @"raw format" );
+	}
+	else if ( [self postFormat] == ASIURLEncodedPostFormat )
+	{
 		[self buildURLEncodedPostBody];
-	} else {
+	}
+	else if ( [self postFormat] == ASIMultipartFormDataPostFormat )
+	{
 		[self buildMultipartFormDataPostBody];
 	}
 
